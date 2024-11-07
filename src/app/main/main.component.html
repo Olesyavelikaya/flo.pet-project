@@ -1,6 +1,9 @@
-<ul>
-  <li><a routerLink="/main/users">Пользователи</a></li>
-  <li><a routerLink="/main/statistics">Статистика</a> </li>
-</ul>
-<router-outlet></router-outlet>
-<app-loading-indicator [detectRouteTransitions]="true"></app-loading-indicator>
+<main>
+  <app-header></app-header>
+  <div class="content">
+    <router-outlet></router-outlet>
+    <app-loading-indicator [detectRouteTransitions]="true"></app-loading-indicator>
+  </div>
+</main>
+
+

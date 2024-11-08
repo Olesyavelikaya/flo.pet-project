@@ -12,6 +12,7 @@ export class UsersService {
   private productsUrl = 'https://fakestoreapi.com/products';
 
   constructor( private http: HttpClient) {}
+
   getUsersData(): Observable<any>{
     return forkJoin({
       users: this.http.get<UsersData>(this.usersUrl),
@@ -30,11 +31,20 @@ export class UsersService {
               return sum;
             }, 0);
           }, 0)
-          const lastVisit = userCarts.reduce((latest, cart) => {
-            return new Date(cart.date) > new Date(latest) ? cart.date : latest;
-          }, '');
+
+          let lastVisit = '';
+          if (userCarts.length > 0) {
+            lastVisit = userCarts.reduce((latest, cart) => {
+              const cartDate = new Date(cart.date);
+              const latestDate = new Date(latest);
+              console.log('lastest', latest);
+              console.log('latetDate', latestDate);
+              return cartDate > latestDate ? cart.date : latest;
+            }, '1970-01-01T00:00:00.000Z');
+          }
+
           return {
-            name: user.name.firstname + ' ' + user.name.lastname,
+            name: `${user.name.firstname} ${user.name.lastname}`,
             lastVisit: lastVisit,
             totalSpent: totalSpent
           };

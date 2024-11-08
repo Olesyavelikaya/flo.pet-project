@@ -5,12 +5,13 @@ import {MatSort, MatSortModule} from '@angular/material/sort';
 import { UserTableData } from "./users-data";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
-import {CurrencyPipe, NgIf} from "@angular/common";
+import {CurrencyPipe, DatePipe, NgIf} from "@angular/common";
+
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [MatTableModule, MatSortModule, MatFormFieldModule, MatInputModule, CurrencyPipe, NgIf],
+  imports: [MatTableModule, MatSortModule, MatFormFieldModule, MatInputModule, CurrencyPipe, NgIf, DatePipe],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
 })

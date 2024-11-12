@@ -13,6 +13,7 @@ import {
 import { NgIf } from '@angular/common';
 import {CdkDrag} from '@angular/cdk/drag-drop';
 import {MatButton} from "@angular/material/button";
+import {AddUserService} from "./add-user.service";
 
 @Component({
   selector: 'app-add-user-modal',
@@ -28,8 +29,10 @@ export class AddUserModalComponent {
 
   constructor(
     public dialogRef: MatDialogRef<AddUserModalComponent>,
+    public addUserService: AddUserService,
     @Inject(MAT_DIALOG_DATA) public data: any,
-  ) {console.log(this.step)}
+
+  ) {}
 
   addUserForm = new FormGroup({
     firstName: new FormControl('', [Validators.required]),
@@ -92,6 +95,8 @@ export class AddUserModalComponent {
   onSubmit(): void {
     if (this.addUserForm.valid && this.photoBase64) {
       const userData = this.addUserForm.value;
+      this.addUserService.addNewUser(userData?.firstName, userData?.lastName, userData?.email, userData?.numberPhone).subscribe()
+      this.addUserService.addNewPhoto(this.photoBase64.toString()).subscribe()
       this.dialogRef.close({ userData, photoBase64: this.photoBase64 });
     }
   }

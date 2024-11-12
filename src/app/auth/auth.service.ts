@@ -38,7 +38,7 @@ export class AuthService {
     );
   }
 
-  logou() {
+  logout() {
     this.store.dispatch(new Logout());
   }
 }

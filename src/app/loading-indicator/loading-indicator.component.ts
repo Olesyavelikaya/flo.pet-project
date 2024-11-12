@@ -1,4 +1,4 @@
-import { Component, ContentChild, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Observable, tap } from 'rxjs';
 import { LoadingService } from './loading.service';

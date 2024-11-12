@@ -9,6 +9,7 @@ import {CurrencyPipe, DatePipe, NgIf} from "@angular/common";
 import {MatDialog} from "@angular/material/dialog";
 import {AddUserModalComponent} from "../add-user-modal/add-user-modal.component";
 import {MatButton} from "@angular/material/button";
+import {PhotoUsersService} from "./photo-users.service";
 
 
 @Component({
@@ -24,13 +25,14 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private userService: UsersService, public dialog: MatDialog) {}
+  constructor(private userService: UsersService, public dialog: MatDialog, public photoUsersService: PhotoUsersService) {}
 
   ngOnInit() {
     this.userService.getUsersData().subscribe(data => {
-      this.dataSource = new MatTableDataSource<UserTableData>(data);
+      this.dataSource = new MatTableDataSource<UserTableData>(data); //TODO: Отобразить в таблице
       this.dataSource.sort = this.sort;
     });
+    this.photoUsersService.getPhotoUrl().subscribe()
   }
 
   ngAfterViewInit() {

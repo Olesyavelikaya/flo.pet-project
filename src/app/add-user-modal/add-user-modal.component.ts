@@ -82,6 +82,12 @@ export class AddUserModalComponent {
     this.photoBase64 = null;
   };
 
+  onPhoneFocus() {
+    const phoneControl = this.addUserForm.get('numberPhone')
+    if (phoneControl && !phoneControl?.value?.startsWith('+')) {
+      phoneControl.setValue('+' + phoneControl.value)
+    }
+  }
 
   onSubmit(): void {
     if (this.addUserForm.valid && this.photoBase64) {

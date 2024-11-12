@@ -64,7 +64,7 @@
         </div>
       </div>
       <div class="form-group">
-        <input type="text" name="numberPhone" formControlName="numberPhone" placeholder="Номер телефона" value="+"/>
+        <input type="text" name="numberPhone" formControlName="numberPhone" placeholder="Номер телефона" (focus)="onPhoneFocus()"/>
         <div
           *ngIf="
           addUserForm.get('numberPhone')?.invalid &&

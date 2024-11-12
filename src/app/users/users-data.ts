@@ -30,16 +30,12 @@ export interface User {
 export type UsersData = User[];
 
 export interface Cart {
-id: number;
-userId: number;
-date: string;
-products: [
-  {productId: number,
-    quantity: number,
-}]
+  id: number;
+  userId: number;
+  date: string;
+  products: [{ productId: number; quantity: number }];
 }
-export type CartData = Cart[]
-
+export type CartData = Cart[];
 
 export interface Product {
   id: number;

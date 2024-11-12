@@ -6,12 +6,15 @@ import { UserTableData } from "./users-data";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {CurrencyPipe, DatePipe, NgIf} from "@angular/common";
+import {MatDialog} from "@angular/material/dialog";
+import {AddUserModalComponent} from "../add-user-modal/add-user-modal.component";
+import {MatButton} from "@angular/material/button";
 
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [MatTableModule, MatSortModule, MatFormFieldModule, MatInputModule, CurrencyPipe, NgIf, DatePipe],
+  imports: [MatTableModule, MatSortModule, MatFormFieldModule, MatInputModule, CurrencyPipe, NgIf, DatePipe, MatButton],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
 })
@@ -21,7 +24,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private userService: UsersService) {}
+  constructor(private userService: UsersService, public dialog: MatDialog) {}
 
   ngOnInit() {
     this.userService.getUsersData().subscribe(data => {
@@ -42,4 +45,15 @@ export class UsersComponent implements OnInit, AfterViewInit {
       this.dataSource.filter = filterValue.trim().toLowerCase();
     }
   }
+
+  openAddUserModal(): void {
+    const dialogRef = this.dialog.open(AddUserModalComponent, {
+      width: '600px',
+      height: '500px',
+      data: {}
+    });
+
+  }
+
+
 }

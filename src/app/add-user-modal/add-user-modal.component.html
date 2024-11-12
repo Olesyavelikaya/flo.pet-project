@@ -1,0 +1,102 @@
+<div class="add-user_form-container">
+  <h2 mat-dialog-title *ngIf="step === 1">Добавление нового пользователя</h2>
+  <h2 mat-dialog-title *ngIf="step === 2">
+    Добавьте аватар для нового пользователя
+  </h2>
+  <mat-dialog-content>
+    <form *ngIf="step === 1" [formGroup]="addUserForm" class="add-user_form">
+      <div class="form-group">
+        <input
+          type="text"
+          id="lastName"
+          name="lastName"
+          formControlName="lastName"
+          placeholder="Фамилия"
+        />
+        <div
+          *ngIf="
+          addUserForm.get('lastName')?.invalid &&
+          (addUserForm.get('lastName')?.dirty ||
+            addUserForm.get('lastName')?.touched)"
+          class="error-message"
+        >
+          <div *ngIf="addUserForm.get('lastName')?.errors?.['required']">
+            Фамилия обязателена
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <input
+          type="text"
+          id="firstName"
+          name="firstName"
+          formControlName="firstName"
+          placeholder="Имя"
+        />
+        <div
+          *ngIf="
+          addUserForm.get('firstName')?.invalid &&
+          (addUserForm.get('firstName')?.dirty ||
+            addUserForm.get('firstName')?.touched)
+        "
+          class="error-message"
+        >
+          <div *ngIf="addUserForm.get('firstName')?.errors?.['required']">
+            Имя обязателено
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <input type="email" id="email" name="email" formControlName="email" placeholder="Email" />
+        <div
+          *ngIf="
+          addUserForm.get('email')?.invalid &&
+          (addUserForm.get('email')?.dirty || addUserForm.get('email')?.touched)
+        "
+          class="error-message"
+        >
+          <div *ngIf="addUserForm.get('email')?.errors?.['required']">
+            Почта обязателена
+          </div>
+          <div *ngIf="addUserForm.get('email')?.errors?.['email']">
+            Введите корректную почту
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <input type="text" name="numberPhone" formControlName="numberPhone" placeholder="Номер телефона" value="+"/>
+        <div
+          *ngIf="
+          addUserForm.get('numberPhone')?.invalid &&
+          (addUserForm.get('numberPhone')?.dirty ||
+            addUserForm.get('numberPhone')?.touched)
+        "
+          class="error-message"
+        >
+          <div *ngIf="addUserForm.get('numberPhone')?.errors?.['required']">
+            Номер обязателен
+          </div>
+          <div *ngIf="addUserForm.get('numberPhone')?.errors?.['min']">
+            Номер должен состоять из 11 цифр
+          </div>
+        </div>
+      </div>
+    </form>
+    <div *ngIf="step === 2">
+      <div *ngIf="!photoPreview" class="drop-zone" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+        <p>Перетащите сюда файл</p>
+        <input type="file" (change)="onFileChange($event)" accept="image/*" style="display: none;">
+      </div>
+      <div *ngIf="photoPreview" class="photo-preview">
+        <img [src]="photoPreview" alt="Preview" style="max-width: 100%; max-height: 200px;">
+        <button mat-raised-button (click)="removePhoto()">Удалить файл</button>
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-dialog-close>Отменить</button>
+    <button *ngIf="step === 1" (click)="nextStep()" [disabled]="!addUserForm.valid">Продолжить</button>
+    <button *ngIf="step === 2" (click)="onSubmit()" [mat-dialog-close]="true">Завершить</button>
+  </mat-dialog-actions>
+
+</div>

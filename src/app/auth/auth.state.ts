@@ -1,35 +1,31 @@
 import { Injectable } from '@angular/core';
-import {Action, Selector, State, StateContext} from '@ngxs/store';
-import {Login, Logout} from "./auth.action";
+import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { Login, Logout } from './auth.action';
 
-export interface  AuthStateModal{
+export interface AuthStateModal {
   isAuthenticated: boolean;
 }
 
 @State<AuthStateModal>({
   name: 'auth',
   defaults: {
-    isAuthenticated: false
-  }
+    isAuthenticated: false,
+  },
 })
 @Injectable()
-export class AuthState{
-
+export class AuthState {
   @Action(Login)
   login(ctx: StateContext<AuthStateModal>) {
-    ctx.patchState({isAuthenticated: true})
-}
+    ctx.patchState({ isAuthenticated: true });
+  }
 
-@Action(Logout)
+  @Action(Logout)
   logout(ctx: StateContext<AuthStateModal>) {
-    ctx.patchState({isAuthenticated: false})
-}
+    ctx.patchState({ isAuthenticated: false });
+  }
 
-@Selector()
+  @Selector()
   static isAuthenticated(state: AuthStateModal) {
-    return state?.isAuthenticated ?? false
-}
-
-
-
+    return state?.isAuthenticated ?? false;
+  }
 }

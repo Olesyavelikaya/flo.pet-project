@@ -49,7 +49,6 @@ export class UsersService {
           }
 
           const photo = photos.find((photo) => photo.id === user.id)
-
           return {
             name: `${user.name.firstname} ${user.name.lastname}`,
             lastVisit: lastVisit,

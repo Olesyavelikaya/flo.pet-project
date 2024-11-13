@@ -1,34 +1,38 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { UsersService } from "./users.service";
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatSort, MatSortModule} from '@angular/material/sort';
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatInputModule} from "@angular/material/input";
 import {CurrencyPipe, DatePipe, NgIf} from "@angular/common";
 import {MatDialog} from "@angular/material/dialog";
 import {AddUserModalComponent} from "../add-user-modal/add-user-modal.component";
 import {MatButton} from "@angular/material/button";
 import {UserTableData } from "./users-data";
-
+import {Observable} from "rxjs";
+import { UsersState} from "./users.state";
+import {FetchUsers, AddUser} from "./users.action";
+import {Store} from "@ngxs/store";
+import { MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
 
 @Component({
   selector: 'app-users',
+  templateUrl: './users.component.html',
   standalone: true,
   imports: [MatTableModule, MatSortModule, MatFormFieldModule, MatInputModule, CurrencyPipe, NgIf, DatePipe, MatButton],
-  templateUrl: './users.component.html',
-  styleUrl: './users.component.css'
+  styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['photo', 'name', 'lastVisit', 'totalSpent'];
   dataSource!: MatTableDataSource<UserTableData>;
+  users$: Observable<UserTableData[]> = this.store.select(UsersState.getUsers)
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private userService: UsersService, public dialog: MatDialog) {}
+  constructor(private store: Store, public dialog: MatDialog) {}
 
   ngOnInit() {
-    this.userService.getUsersData().subscribe(data => {
-      this.dataSource = new MatTableDataSource<UserTableData>(data);
+    this.store.dispatch(new FetchUsers());
+    this.users$.subscribe(users => {
+      this.dataSource = new MatTableDataSource<UserTableData>(users);
       this.dataSource.sort = this.sort;
     });
   }
@@ -53,7 +57,16 @@ export class UsersComponent implements OnInit, AfterViewInit {
       data: {}
     });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const newUser: UserTableData = {
+          name: `${result.userData.firstName} ${result.userData.lastName}`,
+          lastVisit: new Date().toISOString(),
+          totalSpent: 0,
+          photo: result.photoBase64.toString()
+        };
+        this.store.dispatch(new AddUser(newUser));
+      }
+    });
   }
-
-
 }

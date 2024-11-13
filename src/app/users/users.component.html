@@ -8,10 +8,16 @@
   </mat-form-field>
 
   <table mat-table [dataSource]="dataSource" matSort>
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>ФИ</th>
+    <ng-container matColumnDef="photo">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
       <td mat-cell *matCellDef="let element">
-        <!--        <img [src]="element.photo" alt="Photo" class="photo-thumbnail">-->
+        <img [src]="element.photo" alt="Photo" class="photo-thumbnail">
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Фамилия и Имя</th>
+      <td mat-cell *matCellDef="let element">
         {{ element.name }}
       </td>
     </ng-container>

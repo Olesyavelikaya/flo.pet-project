@@ -12,3 +12,9 @@
   bottom: 25px;
   right: 10px;
 }
+
+.photo-thumbnail {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+}

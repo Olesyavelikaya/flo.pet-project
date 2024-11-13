@@ -93,9 +93,11 @@ export class AddUserModalComponent {
   }
 
   onSubmit(): void {
-    if (this.addUserForm.valid && this.photoBase64) {
+    if (this.addUserForm.valid && this.photoBase64 ) {
       const userData = this.addUserForm.value;
-      this.addUserService.addNewUser(userData?.firstName, userData?.lastName, userData?.email, userData?.numberPhone).subscribe()
+      if (userData.firstName && userData.lastName && userData.email && userData.numberPhone) {
+        this.addUserService.addNewUser(userData.firstName, userData.lastName, userData.email, userData.numberPhone).subscribe()
+      }
       this.addUserService.addNewPhoto(this.photoBase64.toString()).subscribe()
       this.dialogRef.close({ userData, photoBase64: this.photoBase64 });
     }

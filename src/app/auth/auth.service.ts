@@ -32,7 +32,7 @@ export class AuthService {
       }),
       catchError((error) => {
         console.error(error);
-        this.toast.error('Неправильный UserName или password', 'Error');
+        this.toast.error('Упс! Что-то пошло не так', 'Error');
         throw error;
       }),
     );

@@ -56,4 +56,15 @@ export interface UserTableData {
   name: string;
   lastVisit: string;
   totalSpent: number;
+  photo: string;
 }
+
+export interface UserPhoto{
+  id: number,
+  url: string,
+}
+
+export type UsersPhotosResponse = UserPhoto[]
+
+export interface UserWithPhoto extends User, UsersPhotosResponse {}
+

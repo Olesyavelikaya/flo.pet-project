@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, map, Observable } from 'rxjs';
-import { UsersData, ProductsData, CartData } from './users-data';
+import { UsersData, ProductsData, CartData, UsersPhotosResponse } from './users-data';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +10,7 @@ export class UsersService {
   private usersUrl = 'https://fakestoreapi.com/users';
   private cartsUrl = 'https://fakestoreapi.com/carts';
   private productsUrl = 'https://fakestoreapi.com/products';
+  private photoUrl = 'http://localhost:3000/photos';
 
   constructor(private http: HttpClient) {}
 
@@ -18,8 +19,9 @@ export class UsersService {
       users: this.http.get<UsersData>(this.usersUrl),
       carts: this.http.get<CartData>(this.cartsUrl),
       products: this.http.get<ProductsData>(this.productsUrl),
+      photos: this.http.get<UsersPhotosResponse>(this.photoUrl)
     }).pipe(
-      map(({ users, carts, products }) => {
+      map(({ users, carts, products, photos }) => {
         return users.map((user) => {
           const userCarts = carts.filter((cart) => cart.userId === user.id);
           const totalSpent = userCarts.reduce((total, cart) => {
@@ -46,10 +48,13 @@ export class UsersService {
             }, '1970-01-01T00:00:00.000Z');
           }
 
+          const photo = photos.find((photo) => photo.id === user.id)
+
           return {
             name: `${user.name.firstname} ${user.name.lastname}`,
             lastVisit: lastVisit,
             totalSpent: totalSpent,
+            photo: photo?.url,
           };
         });
       }),

@@ -66,5 +66,4 @@ export interface UserPhoto{
 
 export type UsersPhotosResponse = UserPhoto[]
 
-export interface UserWithPhoto extends User, UsersPhotosResponse {}
 

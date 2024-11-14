@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Router } from '@angular/router';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {CurrencyPipe, DatePipe, NgIf} from "@angular/common";
@@ -12,6 +13,7 @@ import {FetchUsers, AddUser} from "./users.action";
 import {Store} from "@ngxs/store";
 import { MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
+import {UserDetail} from "../user/user-detail";
 
 @Component({
   selector: 'app-users',
@@ -27,7 +29,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private store: Store, public dialog: MatDialog) {}
+  constructor(private store: Store, public dialog: MatDialog, private router: Router) {}
 
   ngOnInit() {
     this.store.dispatch(new FetchUsers());
@@ -50,6 +52,13 @@ export class UsersComponent implements OnInit, AfterViewInit {
     }
   }
 
+  goToUserDetails(user: UserDetail) {
+    if (user && user.id) {
+      this.router.navigate(['/main/users', user.id]);
+    } else {
+      console.error('User ID is undefined');
+    }
+  }
   openAddUserModal(): void {
     const dialogRef = this.dialog.open(AddUserModalComponent, {
       width: '600px',

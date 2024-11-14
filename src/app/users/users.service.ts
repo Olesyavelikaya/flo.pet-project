@@ -25,12 +25,9 @@ export class UsersService {
         return users.map((user) => {
           const userCarts = carts.filter((cart) => cart.userId === user.id);
           const totalSpent = userCarts.reduce((total, cart) => {
-            return (
-              total +
-              cart.products.reduce((sum, product) => {
+            return (total + cart.products.reduce((sum, product) => {
                 const productInfo = products.find(
-                  (p) => p.id === product.productId,
-                );
+                  (p) => p.id === product.productId);
                 if (productInfo) {
                   return sum + productInfo.price * product.quantity;
                 }
@@ -47,9 +44,9 @@ export class UsersService {
               return cartDate > latestDate ? cart.date : latest;
             }, '1970-01-01T00:00:00.000Z');
           }
-
           const photo = photos.find((photo) => photo.id === user.id)
           return {
+            id: user.id,
             name: `${user.name.firstname} ${user.name.lastname}`,
             lastVisit: lastVisit,
             totalSpent: totalSpent,

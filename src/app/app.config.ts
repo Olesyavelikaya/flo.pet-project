@@ -10,6 +10,7 @@ import { withNgxsStoragePlugin } from '@ngxs/storage-plugin';
 import { AuthState } from './auth/auth.state';
 import {UsersState} from "./users/users.state";
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import {CartState} from "./user/cart.state";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,7 +18,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(HttpClientModule),
     provideAnimations(),
     provideToastr(),
-    provideStore([AuthState, UsersState], withNgxsStoragePlugin({ keys: ['auth', 'users'] })),
+    provideStore([AuthState, UsersState, CartState], withNgxsStoragePlugin({ keys: ['auth', 'users', 'carts'] })),
     provideAnimationsAsync(),
   ],
 };

@@ -1,0 +1,36 @@
+.table-container {
+  max-width: 1000px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto;
+  flex-direction: column;
+}
+.main-container {
+  display: flex;
+}
+
+.button-back {
+  position: absolute;
+  top: 40px;
+  left: 50px;
+}
+
+.user-info {
+  display: flex;
+  gap: 15px;
+  margin: 30px 50px;
+}
+
+.user-photo {
+  width: 150px;
+  height: 150px;
+  border-radius: 100px;
+}
+
+.button-quantity {
+  background: none;
+  border: none;
+  font-weight: bold;
+  font-size: 20px;
+}

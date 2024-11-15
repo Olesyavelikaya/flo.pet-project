@@ -1,7 +1,7 @@
 <main>
   <div class="content">
     <app-header *ngIf="showHeader"></app-header>
-    <router-outlet (activate)="onActivate($event)"></router-outlet>
+    <router-outlet></router-outlet>
     <app-loading-indicator
       [detectRouteTransitions]="true"
     ></app-loading-indicator>

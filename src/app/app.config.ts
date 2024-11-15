@@ -11,6 +11,7 @@ import { AuthState } from './auth/auth.state';
 import {UsersState} from "./users/users.state";
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {CartState} from "./user/cart.state";
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,6 +20,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideToastr(),
     provideStore([AuthState, UsersState, CartState], withNgxsStoragePlugin({ keys: ['auth', 'users', 'carts'] })),
-    provideAnimationsAsync(),
+    provideAnimationsAsync(), provideCharts(withDefaultRegisterables()),
   ],
 };

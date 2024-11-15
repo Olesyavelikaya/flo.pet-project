@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {UserService} from "./user.service";
-import {Observable, switchMap} from "rxjs";
+import {combineLatest, Observable, switchMap, take, tap} from "rxjs";
 import {CurrencyPipe, DatePipe, NgIf} from "@angular/common";
 import {UserDetail, Cart} from "./user-detail";
 import {MatSortModule} from "@angular/material/sort";
@@ -21,49 +21,66 @@ import {CartState, AddCart, UpdateCartQuantity} from "./cart.state";
   templateUrl: './user.component.html',
   styleUrl: './user.component.css',
 })
-export class UserComponent {
+export class UserComponent implements OnInit {
   displayedColumns: string[] = ['productName', 'article', 'cost', 'quantity', 'totalAmount'];
   dataSource!: MatTableDataSource<Cart>;
   user$!: Observable<UserDetail>;
   user: UserDetail | null = null;
-  carts$: Observable<Cart[]> = this.store.select(CartState.getCarts)
+  carts$!: Observable<Cart[]>;
 
-
-  constructor(private route: ActivatedRoute, private router: Router, private userService: UserService, private store: Store) {
-  }
+  constructor(private route: ActivatedRoute, private router: Router, private userService: UserService, private store: Store) {}
 
   ngOnInit() {
+    this.dataSource = new MatTableDataSource<Cart>();
+
     this.user$ = this.route.paramMap.pipe(
       switchMap(params => {
         const userId = Number(params.get('id'));
         return this.userService.getUserById(userId);
       })
     );
-    this.user$.subscribe(user => {
-      this.user = user;
-      this.dataSource = new MatTableDataSource(user.carts);
-      user.carts.forEach(cart => this.store.dispatch(new AddCart(cart)));
+
+    this.user$.pipe(
+      switchMap(user => {
+        this.user = user;
+        // Проверяем, есть ли уже данные в состоянии для этого пользователя
+        this.store.select(state => CartState.getCarts(state.carts)(user.id)).pipe(
+          take(1)
+        ).subscribe(existingCarts => {
+          if (existingCarts.length === 0) {
+            // Если данных нет, добавляем их
+            user.carts.forEach(cart => {
+              this.store.dispatch(new AddCart({ ...cart, userId: user.id }));
+            });
+          }
+        });
+        this.carts$ = this.store.select(state => CartState.getCarts(state.carts)(user.id));
+        return this.carts$;
+      })
+    ).subscribe(carts => {
+      console.log('Carts data received:', carts);
+      if (this.dataSource) {
+        console.log('Updating dataSource with carts:', carts);
+        this.dataSource.data = carts;
+      } else {
+        console.error('dataSource is not initialized');
+      }
     });
   }
 
+
+
+
   increaseQuantity(product: Cart) {
     const newQuantity = product.quantity + 1;
-    this.store.dispatch(new UpdateCartQuantity({ id: product?.id, quantity: newQuantity }));
-    this.updateDataSource();
+    this.store.dispatch(new UpdateCartQuantity({ id: product.id, quantity: newQuantity, userId: this.user?.id || 0 }));
   }
 
   decreaseQuantity(product: Cart) {
     if (product.quantity > 0) {
       const newQuantity = product.quantity - 1;
-      this.store.dispatch(new UpdateCartQuantity({ id: product.id, quantity: newQuantity }));
-      this.updateDataSource();
+      this.store.dispatch(new UpdateCartQuantity({ id: product.id, quantity: newQuantity, userId: this.user?.id || 0 }));
     }
-  }
-
-  updateDataSource() {
-    this.carts$.subscribe(carts => {
-      this.dataSource.data = carts;
-    });
   }
 
   goToUsers() {

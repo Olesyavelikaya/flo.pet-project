@@ -1,8 +1,17 @@
 import {Component, OnInit} from '@angular/core';
 import { LoadingIndicatorComponent } from '../loading-indicator/loading-indicator.component';
-import {RouterLink, RouterLinkActive, RouterOutlet, ActivatedRoute} from '@angular/router';
+import {
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+  ActivatedRoute,
+  Router,
+  NavigationEnd,
+  ActivatedRouteSnapshot
+} from '@angular/router';
 import { HeaderComponent } from '../header/header.component';
 import {NgIf} from "@angular/common";
+import {filter} from "rxjs";
 
 @Component({
   selector: 'app-main',
@@ -21,20 +30,28 @@ import {NgIf} from "@angular/common";
 export class MainComponent implements OnInit {
   showHeader: boolean = true;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.route.data.subscribe(data => {
-      console.log('Route data:', data);
-      this.showHeader = data['showHeader'] !== false;
+    this.updateHeaderVisibility();
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.updateHeaderVisibility();
     });
-    console.log(this.showHeader)
   }
 
-  onActivate(event: any): void {
-    if (event && event.showHeader !== undefined) {
-      this.showHeader = event.showHeader;
+  private updateHeaderVisibility(): void {
+    let child = this.route.firstChild;
+    while (child) {
+      if (child.firstChild) {
+        child = child.firstChild;
+      } else if (child.snapshot.data && child.snapshot.data['showHeader'] !== undefined) {
+        this.showHeader = child.snapshot.data['showHeader'];
+        return;
+      } else {
+        child = null;
+      }
     }
   }
 }
-

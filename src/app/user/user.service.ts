@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {forkJoin, map, Observable} from 'rxjs';
+import {forkJoin, map, Observable, switchMap} from 'rxjs';
 import {CartData, ProductsData, UsersPhotosResponse, User} from "../users/users-data";
 import {UserDetail} from "./user-detail";
 
@@ -56,6 +56,15 @@ private productsUrl = 'https://fakestoreapi.com/products';
           photo: userPhoto?.url || '',
           carts: userProduct
         };
+      })
+    );
+  }
+
+  getAllUsers(): Observable<UserDetail[]> {
+    return this.http.get<User[]>(this.userUrl).pipe(
+      switchMap(users => {
+        const userDetailsObservables = users.map(user => this.getUserById(user.id));
+        return forkJoin(userDetailsObservables);
       })
     );
   }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, map, Observable } from 'rxjs';
-import { UsersData, ProductsData, CartData, UsersPhotosResponse } from './users-data';
+import { UsersData, ProductsData, CartData, UsersPhotosResponse, UsersTableData } from './users-data';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +14,7 @@ export class UsersService {
 
   constructor(private http: HttpClient) {}
 
-  getUsersData(): Observable<any> {
+  getUsersData(): Observable<UsersTableData> {
     return forkJoin({
       users: this.http.get<UsersData>(this.usersUrl),
       carts: this.http.get<CartData>(this.cartsUrl),

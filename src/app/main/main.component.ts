@@ -7,11 +7,13 @@ import {
   ActivatedRoute,
   Router,
   NavigationEnd,
-  ActivatedRouteSnapshot
 } from '@angular/router';
 import { HeaderComponent } from '../header/header.component';
 import {NgIf} from "@angular/common";
 import {filter} from "rxjs";
+import { Store } from '@ngxs/store';
+import {UserService} from "../user/user.service";
+import {FetchAllCarts} from "../user/cart.state";
 
 @Component({
   selector: 'app-main',
@@ -30,7 +32,7 @@ import {filter} from "rxjs";
 export class MainComponent implements OnInit {
   showHeader: boolean = true;
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(private router: Router, private route: ActivatedRoute, private store: Store, private userService: UserService) {}
 
   ngOnInit(): void {
     this.updateHeaderVisibility();
@@ -39,6 +41,7 @@ export class MainComponent implements OnInit {
     ).subscribe(() => {
       this.updateHeaderVisibility();
     });
+    this.loadAllCarts();
   }
 
   private updateHeaderVisibility(): void {
@@ -53,5 +56,13 @@ export class MainComponent implements OnInit {
         child = null;
       }
     }
+  }
+
+  loadAllCarts() {
+    this.userService.getAllUsers().subscribe(users => {
+      users.forEach(user => {
+        this.store.dispatch(new FetchAllCarts({ userId: user.id, carts: user.carts }));
+      });
+    });
   }
 }

@@ -1,10 +1,10 @@
 import { State, Action, StateContext, Selector } from '@ngxs/store';
-import { Cart } from "./user-detail";
+import { CartItem } from "./user-detail";
 import {Injectable} from "@angular/core";
 
 export class AddCart {
   static readonly type = '[Cart] Add Cart';
-  constructor(public payload: Cart & { userId: number }) { }
+  constructor(public payload: CartItem & { userId: number }) { }
 }
 
 export class UpdateCartQuantity {
@@ -13,7 +13,12 @@ export class UpdateCartQuantity {
 }
 
 export interface CartStateModel {
-  carts: { [userId: number]: Cart[] };
+  carts: { [userId: number]: CartItem[] };
+}
+
+export class FetchAllCarts {
+  static readonly type = '[Cart] Fetch All Carts';
+  constructor(public payload: { userId: number, carts: CartItem[] }) { }
 }
 
 @State<CartStateModel>({
@@ -27,9 +32,8 @@ export class CartState {
   @Selector()
   static getCarts(state: CartStateModel) {
     return (userId: number) => {
-      const cartItems = state.carts[userId] || [];
-      console.log(`Getting carts for userId: ${userId}, found:`, cartItems);
-      return cartItems;
+      return state.carts[userId] || [];
+
     };
   }
 
@@ -38,9 +42,6 @@ export class CartState {
     const state = ctx.getState();
     const userId = action.payload.userId;
     const existingCartIndex = state.carts[userId]?.findIndex(cart => cart.id === action.payload.id) ?? -1;
-
-    console.log('Current State before adding:', state); // Лог текущего состояния перед добавлением
-    console.log('Adding cart for userId:', userId, 'Cart:', action.payload);
 
     let updatedCarts;
     if (existingCartIndex !== -1) {
@@ -52,15 +53,12 @@ export class CartState {
     } else {
       updatedCarts = [...(state.carts[userId] || []), action.payload];
     }
-
     ctx.patchState({
       carts: {
         ...state.carts,
         [userId]: updatedCarts
       }
     });
-
-    console.log('Updated state after AddCart:', ctx.getState()); // Лог обновленного состояния
   }
 
   @Action(UpdateCartQuantity)
@@ -78,6 +76,34 @@ export class CartState {
       carts: {
         ...state.carts,
         [userId]: updatedCarts
+      }
+    });
+  }
+
+  @Action(FetchAllCarts)
+  fetchAllCarts(ctx: StateContext<CartStateModel>, action: FetchAllCarts) {
+    const state = ctx.getState();
+    const userId = action.payload.userId;
+
+    const existingCarts = state.carts[userId] || [];
+    const newCarts = action.payload.carts.map(cart => {
+      const existingCartIndex = existingCarts.findIndex(c => c.id === cart.id);
+
+      if (existingCartIndex !== -1) {
+        const updatedCart = {
+          ...existingCarts[existingCartIndex],
+          quantity: cart.quantity
+        };
+        return updatedCart;
+      } else {
+        return cart;
+      }
+    });
+
+    ctx.patchState({
+      carts: {
+        ...state.carts,
+        [userId]: newCarts
       }
     });
   }

@@ -17,6 +17,8 @@ import { Router } from '@angular/router';
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
+  isLoading = false;
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -33,9 +35,17 @@ export class LoginComponent {
   onSubmit() {
     const { username, password } = this.loginForm.value;
     if (username && password) {
-      this.authService.login(username, password).subscribe((success) => {
-        if (success) {
-          this.router.navigate(['/main']);
+      this.isLoading = true;
+      this.authService.login(username, password).subscribe({
+        next: (success) => {
+          this.isLoading = false;
+          if (success) {
+            this.router.navigate(['/main/users']);
+          }
+        },
+        error: (error) => {
+          this.isLoading = false;
+          console.error('Login failed:', error);
         }
       });
     }

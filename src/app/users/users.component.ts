@@ -14,6 +14,7 @@ import {Store} from "@ngxs/store";
 import { MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {UserDetail} from "../user/user-detail";
+import {DialogResult} from "../add-user-modal/add-user";
 
 @Component({
   selector: 'app-users',
@@ -66,9 +67,10 @@ export class UsersComponent implements OnInit, AfterViewInit {
       data: {}
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: DialogResult) => {
       if (result) {
         const newUser: UserTableData = {
+          id: result.id,
           name: `${result.userData.firstName} ${result.userData.lastName}`,
           lastVisit: new Date().toISOString(),
           totalSpent: 0,

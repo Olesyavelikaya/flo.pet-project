@@ -4,10 +4,10 @@ export interface UserDetail {
   email: string;
   phone: string;
   photo: string;
-  carts: Cart[];
+  carts: CartItem[];
 }
 
-export interface Cart {
+export interface CartItem {
   id: number;
   title: string;
   price: number;

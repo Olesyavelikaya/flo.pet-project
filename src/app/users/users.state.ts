@@ -2,12 +2,11 @@ import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { Injectable } from '@angular/core';
 import { UsersService } from './users.service';
 import { UserTableData } from './users-data';
-import {FetchUsers, AddUser} from "./users.action";
-
+import { FetchUsers, AddUser } from './users.action';
 
 @State<UserTableData[]>({
   name: 'users',
-  defaults: []
+  defaults: [],
 })
 @Injectable()
 export class UsersState {
@@ -20,7 +19,7 @@ export class UsersState {
 
   @Action(FetchUsers)
   fetchUsers(ctx: StateContext<UserTableData[]>) {
-    return this.usersService.getUsersData().subscribe(users => {
+    return this.usersService.getUsersData().subscribe((users) => {
       ctx.setState(users);
     });
   }

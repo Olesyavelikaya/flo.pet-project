@@ -11,7 +11,7 @@
     <ng-container matColumnDef="photo">
       <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
       <td mat-cell *matCellDef="let element">
-        <img [src]="element.photo" alt="Photo" class="photo-thumbnail">
+        <img [src]="element.photo" alt="Photo" class="photo-thumbnail" />
       </td>
     </ng-container>
 
@@ -39,9 +39,20 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="goToUserDetails(row)">
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      (click)="goToUserDetails(row)"
+    ></tr>
   </table>
 </div>
 <div class="button-container">
-  <button mat-raised-button color="primary" (click)="openAddUserModal()">Добавить нового пользователя</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="openAddUserModal()"
+    *ngIf="isAdmin"
+  >
+    Добавить нового пользователя
+  </button>
 </div>

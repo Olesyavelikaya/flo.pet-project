@@ -11,9 +11,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { NgIf } from '@angular/common';
-import {CdkDrag} from '@angular/cdk/drag-drop';
-import {MatButton} from "@angular/material/button";
-import {AddUserService} from "./add-user.service";
+import { CdkDrag } from '@angular/cdk/drag-drop';
+import { MatButton } from '@angular/material/button';
+import { AddUserService } from './add-user.service';
+import { DialogResult } from './add-user';
 
 @Component({
   selector: 'app-add-user-modal',
@@ -29,25 +30,24 @@ export class AddUserModalComponent {
 
   constructor(
     public dialogRef: MatDialogRef<AddUserModalComponent>,
-    public addUserService: AddUserService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-
+    private addUserService: AddUserService,
+    @Inject(MAT_DIALOG_DATA) public data: DialogResult,
   ) {}
 
-  addUserForm = new FormGroup({
+  public addUserForm = new FormGroup({
     firstName: new FormControl('', [Validators.required]),
     lastName: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.email, Validators.required]),
-    numberPhone: new FormControl('', [Validators.required,]),
+    numberPhone: new FormControl('', [Validators.required]),
   });
 
-  nextStep() {
+  public nextStep() {
     if (this.step === 1 && this.addUserForm.valid) {
       this.step = 2;
     }
   }
 
-  onDrop(event: DragEvent) {
+  public onDrop(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
     const file = event.dataTransfer?.files[0];
@@ -56,7 +56,7 @@ export class AddUserModalComponent {
     }
   }
 
-  readFile(file: File) {
+  private readFile(file: File) {
     const reader = new FileReader();
     reader.onload = (e) => {
       if (e.target) {
@@ -67,34 +67,39 @@ export class AddUserModalComponent {
     reader.readAsDataURL(file);
   }
 
-  onDragOver(event: DragEvent) {
+  public onDragOver(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
   }
 
-  onFileChange(event: Event): void {
-    const inputEvent = event.target as HTMLInputElement
+  public onFileChange(event: Event): void {
+    const inputEvent = event.target as HTMLInputElement;
     const file = inputEvent.files?.[0];
     if (file) {
       this.readFile(file);
     }
-  };
+  }
 
-  removePhoto(): void {
+  public removePhoto(): void {
     this.photoPreview = null;
     this.photoBase64 = null;
-  };
+  }
 
-  onPhoneFocus() {
-    const phoneControl = this.addUserForm.get('numberPhone')
+  public onPhoneFocus() {
+    const phoneControl = this.addUserForm.get('numberPhone');
     if (phoneControl && !phoneControl?.value?.startsWith('+')) {
-      phoneControl.setValue('+' + phoneControl.value)
+      phoneControl.setValue('+' + phoneControl.value);
     }
   }
 
-  onSubmit(): void {
+  public onSubmit(): void {
     if (this.addUserForm.valid && this.photoBase64) {
       const userData = this.addUserForm.value;
+      const firstName = userData.firstName ?? '';
+      const lastName = userData.lastName ?? '';
+      const email = userData.email ?? '';
+      const numberPhone = userData.numberPhone ?? '';
+      this.addUserService.addNewUser(firstName, lastName, email, numberPhone);
       this.dialogRef.close({ userData, photoBase64: this.photoBase64 });
     }
   }

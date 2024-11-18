@@ -15,9 +15,10 @@
         />
         <div
           *ngIf="
-          addUserForm.get('lastName')?.invalid &&
-          (addUserForm.get('lastName')?.dirty ||
-            addUserForm.get('lastName')?.touched)"
+            addUserForm.get('lastName')?.invalid &&
+            (addUserForm.get('lastName')?.dirty ||
+              addUserForm.get('lastName')?.touched)
+          "
           class="error-message"
         >
           <div *ngIf="addUserForm.get('lastName')?.errors?.['required']">
@@ -35,10 +36,10 @@
         />
         <div
           *ngIf="
-          addUserForm.get('firstName')?.invalid &&
-          (addUserForm.get('firstName')?.dirty ||
-            addUserForm.get('firstName')?.touched)
-        "
+            addUserForm.get('firstName')?.invalid &&
+            (addUserForm.get('firstName')?.dirty ||
+              addUserForm.get('firstName')?.touched)
+          "
           class="error-message"
         >
           <div *ngIf="addUserForm.get('firstName')?.errors?.['required']">
@@ -47,12 +48,19 @@
         </div>
       </div>
       <div class="form-group">
-        <input type="email" id="email" name="email" formControlName="email" placeholder="Email" />
+        <input
+          type="email"
+          id="email"
+          name="email"
+          formControlName="email"
+          placeholder="Email"
+        />
         <div
           *ngIf="
-          addUserForm.get('email')?.invalid &&
-          (addUserForm.get('email')?.dirty || addUserForm.get('email')?.touched)
-        "
+            addUserForm.get('email')?.invalid &&
+            (addUserForm.get('email')?.dirty ||
+              addUserForm.get('email')?.touched)
+          "
           class="error-message"
         >
           <div *ngIf="addUserForm.get('email')?.errors?.['required']">
@@ -64,13 +72,19 @@
         </div>
       </div>
       <div class="form-group">
-        <input type="text" name="numberPhone" formControlName="numberPhone" placeholder="Номер телефона" (focus)="onPhoneFocus()"/>
+        <input
+          type="text"
+          name="numberPhone"
+          formControlName="numberPhone"
+          placeholder="Номер телефона"
+          (focus)="onPhoneFocus()"
+        />
         <div
           *ngIf="
-          addUserForm.get('numberPhone')?.invalid &&
-          (addUserForm.get('numberPhone')?.dirty ||
-            addUserForm.get('numberPhone')?.touched)
-        "
+            addUserForm.get('numberPhone')?.invalid &&
+            (addUserForm.get('numberPhone')?.dirty ||
+              addUserForm.get('numberPhone')?.touched)
+          "
           class="error-message"
         >
           <div *ngIf="addUserForm.get('numberPhone')?.errors?.['required']">
@@ -83,20 +97,41 @@
       </div>
     </form>
     <div *ngIf="step === 2">
-      <div *ngIf="!photoPreview" class="drop-zone" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+      <div
+        *ngIf="!photoPreview"
+        class="drop-zone"
+        (dragover)="onDragOver($event)"
+        (drop)="onDrop($event)"
+      >
         <p>Перетащите сюда файл</p>
-        <input type="file" (change)="onFileChange($event)" accept="image/*" style="display: none;">
+        <input
+          type="file"
+          (change)="onFileChange($event)"
+          accept="image/*"
+          style="display: none"
+        />
       </div>
       <div *ngIf="photoPreview" class="photo-preview">
-        <img [src]="photoPreview" alt="Preview" style="max-width: 100%; max-height: 200px;">
+        <img
+          [src]="photoPreview"
+          alt="Preview"
+          style="max-width: 100%; max-height: 200px"
+        />
         <button mat-raised-button (click)="removePhoto()">Удалить файл</button>
       </div>
     </div>
   </mat-dialog-content>
   <mat-dialog-actions>
     <button mat-dialog-close>Отменить</button>
-    <button *ngIf="step === 1" (click)="nextStep()" [disabled]="!addUserForm.valid">Продолжить</button>
-    <button *ngIf="step === 2" (click)="onSubmit()" [mat-dialog-close]="true">Завершить</button>
+    <button
+      *ngIf="step === 1"
+      (click)="nextStep()"
+      [disabled]="!addUserForm.valid"
+    >
+      Продолжить
+    </button>
+    <button *ngIf="step === 2" (click)="onSubmit()" [mat-dialog-close]="true">
+      Завершить
+    </button>
   </mat-dialog-actions>
-
 </div>

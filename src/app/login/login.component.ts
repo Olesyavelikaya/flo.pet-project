@@ -6,8 +6,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { NgIf } from '@angular/common';
-import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +17,8 @@ import { Router } from '@angular/router';
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
+  isLoading = false;
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -30,13 +32,21 @@ export class LoginComponent {
     ]),
   });
 
-  onSubmit() {
+  public onSubmit() {
     const { username, password } = this.loginForm.value;
     if (username && password) {
-      this.authService.login(username, password).subscribe((success) => {
-        if (success) {
-          this.router.navigate(['/main']);
-        }
+      this.isLoading = true;
+      this.authService.login(username, password).subscribe({
+        next: (success) => {
+          this.isLoading = false;
+          if (success) {
+            this.router.navigate(['/main/users']);
+          }
+        },
+        error: (error: Error) => {
+          this.isLoading = false;
+          console.error('Login failed:', error);
+        },
       });
     }
   }

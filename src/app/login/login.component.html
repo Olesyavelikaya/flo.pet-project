@@ -46,6 +46,8 @@
         </div>
       </div>
     </div>
-    <button type="submit" [disabled]="!loginForm.valid">Войти</button>
+    <button type="submit" [disabled]="!loginForm.valid || isLoading">
+      Войти
+    </button>
   </form>
 </div>

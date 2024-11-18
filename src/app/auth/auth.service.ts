@@ -10,6 +10,9 @@ import { Login, Logout } from './auth.action';
 })
 export class AuthService {
   private url = 'https://fakestoreapi.com/auth/login';
+  private userRoles: Record<string, string> = {
+    mor_2314: 'admin',
+  };
 
   constructor(
     private http: HttpClient,
@@ -17,16 +20,13 @@ export class AuthService {
     private store: Store,
   ) {}
 
-  isLoggedIn(): boolean {
-    return this.store.selectSnapshot((state) => state.auth.isAuthenticated);
-  }
-
   public login(username: string, password: string): Observable<boolean> {
     const body = { username, password };
-    return this.http.post<string>(this.url, body).pipe(
-      map((success) => {
-        if (success) {
-          this.store.dispatch(new Login());
+    return this.http.post<any>(this.url, body).pipe(
+      map((response) => {
+        if (response.token) {
+          const role: string = this.userRoles[username] || 'viewer';
+          this.store.dispatch(new Login(role));
         }
         return true;
       }),

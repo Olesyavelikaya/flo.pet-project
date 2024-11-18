@@ -1,5 +1,4 @@
-import {UserTableData} from "./users-data";
-
+import { UserTableData } from './users-data';
 
 export class FetchUsers {
   static readonly type = '[Users] Fetch Users';

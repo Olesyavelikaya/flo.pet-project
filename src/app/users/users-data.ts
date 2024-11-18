@@ -53,17 +53,18 @@ export interface Product {
 export type ProductsData = Product[];
 
 export interface UserTableData {
+  id: number;
   name: string;
   lastVisit: string;
   totalSpent: number;
-  photo: string;
+  photo: string | undefined;
 }
 
-export interface UserPhoto{
-  id: number,
-  url: string,
+export type UsersTableData = UserTableData[];
+
+export interface UserPhoto {
+  id: number;
+  url: string;
 }
 
-export type UsersPhotosResponse = UserPhoto[]
-
-
+export type UsersPhotosResponse = UserPhoto[];

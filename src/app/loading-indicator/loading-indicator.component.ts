@@ -1,13 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AsyncPipe } from '@angular/common';
 import { Observable, tap } from 'rxjs';
-import { LoadingService } from './loading.service';
 import {
   RouteConfigLoadEnd,
   RouteConfigLoadStart,
   Router,
 } from '@angular/router';
-import { AsyncPipe } from '@angular/common';
+import { LoadingService } from './loading.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 
 @Component({
   selector: 'app-loading-indicator',

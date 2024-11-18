@@ -1,18 +1,26 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {catchError, map} from "rxjs";
-import {User} from "../users/users-data";
-
+import { HttpClient } from '@angular/common/http';
+import { catchError, map } from 'rxjs';
+import { User } from '../users/users-data';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AddUserService {
-private urlAddUser = 'https://fakestoreapi.com/users'
-  private urlAddPhoto = 'http://localhost:3000/photos/upload'
-  constructor(private http: HttpClient) { }
+  private urlAddUser = 'https://fakestoreapi.com/users';
 
-  addNewUser(firstName: string, lastName: string, email: string, numberPhone:string){
+  constructor(
+    private http: HttpClient,
+    private toast: ToastrService,
+  ) {}
+
+  addNewUser(
+    firstName: string,
+    lastName: string,
+    email: string,
+    numberPhone: string,
+  ) {
     const body = {
       email: email,
       username: 'NoName',
@@ -35,28 +43,14 @@ private urlAddUser = 'https://fakestoreapi.com/users'
     };
     return this.http.post<User>(this.urlAddUser, body).pipe(
       map((success) => {
-        console.log('user', success)
-        return success
-
+        this.toast.success('Пользователь успешно добален', 'Отлично!');
+        return success;
       }),
       catchError((error: Error) => {
         console.error(error);
+        this.toast.error('Что-то пошло не так', 'Упс!');
         throw error;
-      })
-    )
-  }
-
-  addNewPhoto(file: string | ArrayBuffer){
-  const body = {file}
-    return this.http.post(this.urlAddPhoto, body).pipe(
-      map((success) => {
-        console.log('p', success)
-        return success
       }),
-      catchError((error: Error) => {
-        console.error(error);
-        throw error;
-      })
-    )
+    );
   }
 }

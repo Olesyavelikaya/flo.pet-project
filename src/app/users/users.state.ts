@@ -4,6 +4,7 @@ import { UsersService } from './users.service';
 import { UserTableData } from './users-data';
 import { FetchUsers, AddUser } from './users.action';
 
+
 @State<UserTableData[]>({
   name: 'users',
   defaults: [],
@@ -22,6 +23,7 @@ export class UsersState {
     return this.usersService.getUsersData().subscribe((users) => {
       ctx.setState(users);
     });
+
   }
 
   @Action(AddUser)

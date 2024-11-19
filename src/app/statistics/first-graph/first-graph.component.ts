@@ -33,39 +33,38 @@ export class FirstGraphComponent {
 
           const productQuantities: { [key: string]: number } = {};
 
-          allCarts.forEach((cart) => {
-            if (productQuantities[cart.title]) {
-              productQuantities[cart.title] += cart.quantity;
-            } else {
-              productQuantities[cart.title] = cart.quantity;
+        allCarts.forEach(cart => {
+          if (productQuantities[cart.title]) {
+            productQuantities[cart.title] += cart.quantity;
+          } else {
+            productQuantities[cart.title] = cart.quantity;
+          }
+        });
+
+        const productTitles = Object.keys(productQuantities);
+        const quantities = Object.values(productQuantities);
+
+
+        const config: ChartConfiguration = {
+          type: 'bar',
+          data: {
+            labels: productTitles,
+            datasets: [{
+              label: 'Количество купленных товаров',
+              data: quantities,
+              backgroundColor: 'rgba(54, 162, 235, 0.2)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
             }
-          });
-
-          const productTitles = Object.keys(productQuantities);
-          const quantities = Object.values(productQuantities);
-
-          const config: ChartConfiguration = {
-            type: 'bar',
-            data: {
-              labels: productTitles,
-              datasets: [
-                {
-                  label: 'Количество купленных товаров',
-                  data: quantities,
-                  backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                  borderColor: 'rgba(54, 162, 235, 1)',
-                  borderWidth: 1,
-                },
-              ],
-            },
-            options: {
-              scales: {
-                y: {
-                  beginAtZero: true,
-                },
-              },
-            },
-          };
+          }
+        };
 
           this.chart = new Chart('firstChart', config);
         });

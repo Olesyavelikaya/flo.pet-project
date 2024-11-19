@@ -1,4 +1,4 @@
-export interface DialogResult {
+export  interface DialogResult {
   id: number;
   userData: {
     firstName: string;

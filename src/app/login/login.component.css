@@ -74,5 +74,3 @@ button[type="submit"]:disabled {
 button[type="submit"]:hover:not(:disabled) {
   background-color: #4cae4c;
 }
-
-

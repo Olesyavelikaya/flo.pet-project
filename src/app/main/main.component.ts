@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
-import { filter } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { Store } from '@ngxs/store';
 import {
   RouterLink,
@@ -29,8 +29,10 @@ import { FetchAllCarts } from '../user/cart.state';
   templateUrl: './main.component.html',
   styleUrl: './main.component.css',
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, OnDestroy {
   showHeader: boolean = true;
+  private routerSubscription?: Subscription;
+  private userSubscription?: Subscription;
 
   constructor(
     private router: Router,
@@ -41,12 +43,21 @@ export class MainComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateHeaderVisibility();
-    this.router.events
+    this.routerSubscription = this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         this.updateHeaderVisibility();
       });
     this.loadAllCarts();
+  }
+
+  ngOnDestroy() {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+    if (this.userSubscription) {
+      this.routerSubscription?.unsubscribe();
+    }
   }
 
   private updateHeaderVisibility(): void {
@@ -67,12 +78,14 @@ export class MainComponent implements OnInit {
   }
 
   private loadAllCarts() {
-    this.userService.getAllUsers().subscribe((users) => {
-      users.forEach((user) => {
-        this.store.dispatch(
-          new FetchAllCarts({ userId: user.id, carts: user.carts }),
-        );
+    this.userSubscription = this.userService
+      .loadAllData()
+      .subscribe((users) => {
+        users.forEach((user) => {
+          this.store.dispatch(
+            new FetchAllCarts({ userId: user.id, carts: user.carts }),
+          );
+        });
       });
-    });
   }
 }

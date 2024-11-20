@@ -46,23 +46,28 @@ export class CartState {
       state.carts[userId]?.findIndex((cart) => cart.id === action.payload.id) ??
       -1;
 
-    let updatedCarts;
     if (existingCartIndex !== -1) {
-      updatedCarts = [...(state.carts[userId] || [])];
+      const updatedCarts = [...(state.carts[userId] || [])];
       updatedCarts[existingCartIndex] = {
         ...updatedCarts[existingCartIndex],
         quantity:
           updatedCarts[existingCartIndex].quantity + action.payload.quantity,
       };
+      ctx.patchState({
+        carts: {
+          ...state.carts,
+          [userId]: updatedCarts,
+        },
+      });
     } else {
-      updatedCarts = [...(state.carts[userId] || []), action.payload];
+      const newCarts = [...(state.carts[userId] || []), action.payload];
+      ctx.patchState({
+        carts: {
+          ...state.carts,
+          [userId]: newCarts,
+        },
+      });
     }
-    ctx.patchState({
-      carts: {
-        ...state.carts,
-        [userId]: updatedCarts,
-      },
-    });
   }
 
   @Action(UpdateCartQuantity)
@@ -72,48 +77,45 @@ export class CartState {
   ) {
     const state = ctx.getState();
     const userId = action.payload.userId;
-    const updatedCarts =
-      state.carts[userId]?.map((cart) => {
-        if (cart.id === action.payload.id) {
-          const newTotal = cart.price * action.payload.quantity;
-          return {
-            ...cart,
-            quantity: action.payload.quantity,
-            total: newTotal,
-          };
-        }
-        return cart;
-      }) || [];
-    ctx.patchState({
-      carts: {
-        ...state.carts,
-        [userId]: updatedCarts,
-      },
-    });
+    const cartIndex =
+      state.carts[userId]?.findIndex((cart) => cart.id === action.payload.id) ??
+      -1;
+
+    if (cartIndex !== -1) {
+      const updatedCarts = [...(state.carts[userId] || [])];
+      updatedCarts[cartIndex] = {
+        ...updatedCarts[cartIndex],
+        quantity: action.payload.quantity,
+        total: updatedCarts[cartIndex].price * action.payload.quantity,
+      };
+      ctx.patchState({
+        carts: {
+          ...state.carts,
+          [userId]: updatedCarts,
+        },
+      });
+    }
   }
 
   @Action(FetchAllCarts)
   fetchAllCarts(ctx: StateContext<CartStateModel>, action: FetchAllCarts) {
     const state = ctx.getState();
     const userId = action.payload.userId;
-
     const existingCarts = state.carts[userId] || [];
+
     const newCarts = action.payload.carts.map((cart) => {
       const existingCartIndex = existingCarts.findIndex(
         (c) => c.id === cart.id,
       );
-
       if (existingCartIndex !== -1) {
-        const updatedCart = {
+        return {
           ...existingCarts[existingCartIndex],
           quantity: cart.quantity,
         };
-        return updatedCart;
       } else {
         return cart;
       }
     });
-
     ctx.patchState({
       carts: {
         ...state.carts,

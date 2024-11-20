@@ -1,7 +1,13 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  AfterViewInit,
+  OnDestroy,
+} from '@angular/core';
 import { CurrencyPipe, DatePipe, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngxs/store';
 import { AddUserModalComponent } from '../add-user-modal/add-user-modal.component';
 import { UserTableData } from './users-data';
@@ -16,7 +22,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-
 
 @Component({
   selector: 'app-users',
@@ -34,13 +39,15 @@ import { MatInputModule } from '@angular/material/input';
   ],
   styleUrls: ['./users.component.css'],
 })
-export class UsersComponent implements OnInit, AfterViewInit {
+export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
   displayedColumns: string[] = ['photo', 'name', 'lastVisit', 'totalSpent'];
   dataSource!: MatTableDataSource<UserTableData>;
   users$: Observable<UserTableData[]> = this.store.select(UsersState.getUsers);
   isAdmin: boolean = false;
 
   @ViewChild(MatSort) sort!: MatSort;
+
+  private usersSubscription: Subscription | null = null;
 
   constructor(
     private store: Store,
@@ -50,7 +57,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.store.dispatch(new FetchUsers());
-    this.users$.subscribe((users) => {
+    this.usersSubscription = this.users$.subscribe((users) => {
       this.dataSource = new MatTableDataSource<UserTableData>(users);
       this.dataSource.sort = this.sort;
     });
@@ -60,6 +67,12 @@ export class UsersComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     if (this.dataSource) {
       this.dataSource.sort = this.sort;
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.usersSubscription) {
+      this.usersSubscription.unsubscribe();
     }
   }
 

@@ -16,7 +16,6 @@ import { MatButton } from '@angular/material/button';
 import { AddUserService } from './add-user.service';
 import { DialogResult } from './add-user';
 
-
 @Component({
   selector: 'app-add-user-modal',
   standalone: true,
@@ -86,8 +85,8 @@ export class AddUserModalComponent {
     this.photoBase64 = null;
   }
 
- public onPhoneFocus() {
-    const phoneControl = this.addUserForm.get('numberPhone')
+  public onPhoneFocus() {
+    const phoneControl = this.addUserForm.get('numberPhone');
     if (phoneControl && !phoneControl?.value?.startsWith('+')) {
       phoneControl.setValue('+' + phoneControl.value);
     }

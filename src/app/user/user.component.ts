@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, switchMap, take } from 'rxjs';
+import { Observable, Subscription, switchMap, take } from 'rxjs';
 import { CurrencyPipe, DatePipe, NgIf } from '@angular/common';
 import { UserService } from './user.service';
 import { Store } from '@ngxs/store';
@@ -12,8 +12,6 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
-
-
 
 @Component({
   selector: 'app-user',
@@ -31,7 +29,7 @@ import { MatButton } from '@angular/material/button';
   templateUrl: './user.component.html',
   styleUrl: './user.component.css',
 })
-export class UserComponent implements OnInit {
+export class UserComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [
     'productName',
     'article',
@@ -43,6 +41,9 @@ export class UserComponent implements OnInit {
   user$!: Observable<UserDetail>;
   user: UserDetail | null = null;
   carts$!: Observable<CartItem[]>;
+
+  private userSubscription: Subscription | null = null;
+  private cartsSubscription: Subscription | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -60,7 +61,7 @@ export class UserComponent implements OnInit {
       }),
     );
 
-    this.user$
+    this.userSubscription = this.user$
       .pipe(
         switchMap((user) => {
           this.user = user;
@@ -87,6 +88,15 @@ export class UserComponent implements OnInit {
           console.error('dataSource is not initialized');
         }
       });
+  }
+
+  ngOnDestroy() {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+    if (this.cartsSubscription) {
+      this.cartsSubscription.unsubscribe();
+    }
   }
 
   public increaseQuantity(product: CartItem) {

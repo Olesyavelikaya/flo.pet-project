@@ -6,5 +6,5 @@ import { AuthState } from './auth.state';
 export const roleGuard: CanActivateFn = (route, state) => {
   const store = inject(Store);
   const userRole = store.selectSnapshot(AuthState.getRole);
-  return userRole === 'admin'
-}
+  return userRole === 'admin';
+};

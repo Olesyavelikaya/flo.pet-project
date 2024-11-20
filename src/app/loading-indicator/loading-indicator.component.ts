@@ -9,7 +9,6 @@ import {
 import { LoadingService } from './loading.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-
 @Component({
   selector: 'app-loading-indicator',
   standalone: true,

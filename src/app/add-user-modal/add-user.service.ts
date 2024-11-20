@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {catchError, map} from "rxjs";
-import {User} from "../users/users-data";
+import { HttpClient } from '@angular/common/http';
+import { catchError, map } from 'rxjs';
+import { User } from '../users/users-data';
 import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
@@ -50,11 +50,7 @@ export class AddUserService {
         console.error(error);
         this.toast.error('Что-то пошло не так', 'Упс!');
         throw error;
-
-
       }),
-
     );
   }
-
 }

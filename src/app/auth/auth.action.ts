@@ -1,6 +1,8 @@
+import {UserRole} from "./auth.state";
+
 export class Login {
   static readonly type = '[Auth] LoginUser';
-  constructor(public role: string) {}
+  constructor(public role: UserRole) {}
 }
 
 export class Logout {

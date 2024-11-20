@@ -1,13 +1,14 @@
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { Injectable } from '@angular/core';
 import { UsersService } from './users.service';
-import { UserTableData } from './users-data';
+import { UserTableData} from './users-data';
 import { FetchUsers, AddUser } from './users.action';
 import { tap } from 'rxjs';
+import {append} from "@ngxs/store/operators";
 
 @State<UserTableData[]>({
   name: 'users',
-  defaults: [],
+  defaults: []
 })
 @Injectable()
 export class UsersState {
@@ -28,9 +29,10 @@ export class UsersState {
   }
 
   @Action(AddUser)
-  addUser(ctx: StateContext<UserTableData[]>, { payload }: AddUser) {
-    const state = ctx.getState();
-    state.push(payload);
-    ctx.setState(state);
+  addUser(ctx: StateContext<UserTableData[]>, action: AddUser) {
+    ctx.setState(
+      append<UserTableData>([action.payload])
+    );
+
   }
 }

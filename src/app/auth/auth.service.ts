@@ -1,17 +1,18 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { catchError, map, Observable } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
-import { Store } from '@ngxs/store';
-import { Login, Logout } from './auth.action';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {catchError, map, Observable} from 'rxjs';
+import {ToastrService} from 'ngx-toastr';
+import {Store} from '@ngxs/store';
+import {Login, Logout} from './auth.action';
+import {UserRole} from "./auth.state";
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private url = 'https://fakestoreapi.com/auth/login';
-  private userRoles: Record<string, string> = {
-    mor_2314: 'admin',
+  private userRoles: Record<string, UserRole> = {
+    mor_2314: UserRole.Admin,
   };
 
   constructor(
@@ -25,7 +26,7 @@ export class AuthService {
     return this.http.post<any>(this.url, body).pipe(
       map((response) => {
         if (response.token) {
-          const role: string = this.userRoles[username] || 'viewer';
+          const role: UserRole = this.userRoles[username] || UserRole.Viewer;
           this.store.dispatch(new Login(role));
         }
         return true;

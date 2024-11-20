@@ -4,10 +4,5 @@ import { Store } from '@ngxs/store';
 import { inject } from '@angular/core';
 
 export const authGuard: CanActivateFn = (route, state) => {
-  const store = inject(Store);
-  const isAuthenticated = store.selectSnapshot(AuthState.isAuthenticated);
-  if (isAuthenticated) {
-    return true;
-  }
-  return false;
+  return inject(Store).selectSnapshot(AuthState.isAuthenticated);
 };
